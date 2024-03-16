@@ -54,7 +54,7 @@ def draw_screen(spe1, spe2, spe1_life, spe2_life, spe1_bullets, spe2_bullets):
     
     
     
-def move_spe1(spe1, spe2, key):
+def move_spe1(spe1, key):
         
     if key[pygame.K_w] and spe1.y - VEL > 0:
             spe1.y -= VEL
@@ -65,7 +65,7 @@ def move_spe1(spe1, spe2, key):
     if key[pygame.K_d] and spe1.x + VEL + spe1.width < WIDTH/2 - 3:
         spe1.x += VEL
         
-def move_spe2(spe1, spe2, key):
+def move_spe2(spe2, key):
     if key[pygame.K_UP] and spe2.y - VEL > 0:
             spe2.y -= VEL
     if key[pygame.K_DOWN] and spe2.y + VEL + spe2.height < HEIGHT:
@@ -152,8 +152,8 @@ def main():
         key = pygame.key.get_pressed()
         
         handle_bullets(spe1_bullets, spe2_bullets, spe1, spe2)
-        move_spe1(spe1, spe2, key)
-        move_spe2(spe1, spe2, key)
+        move_spe1(spe1, key)
+        move_spe2(spe2, key)
         draw_screen( spe1, spe2, spe1_life, spe2_life, spe1_bullets, spe2_bullets)
         
     main()
