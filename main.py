@@ -8,34 +8,40 @@ SPACESHIP_2 = pygame.transform.scale(pygame.image.load(os.path.join("spaceship",
 SPACESHIP_3 = pygame.transform.scale(pygame.image.load(os.path.join("spaceship", "spaceship3.png")), (90, 100)) 
 SPACESHIP_4 = pygame.transform.scale(pygame.image.load(os.path.join("spaceship", "spaceship4.png")), (90, 79)) 
 
+# bullet
+BULLET_1 = pygame.transform.scale(pygame.image.load(os.path.join("bullet1.png")), (47, 15))
+BULLET_2 = pygame.transform.scale(pygame.image.load(os.path.join("bullet2.png")), (46, 15))	
+
+BG = pygame.image.load(os.path.join("bg.png"))
+
 WHITE = (0, 0, 0)
 FPS = 60
-VEL = 1
-
+VEL = 5
 WIDTH, HEIGHT = 1066, 600
+
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Galaxy Fury")
 
 
 
 def draw_screen(spe1, spe2):
-    SCREEN.fill(WHITE)
+    SCREEN.blit(BG, (0, 0))
     SCREEN.blit(SPACESHIP_1, (spe1.x, spe1.y))
     SCREEN.blit(SPACESHIP_3, (spe2.x, spe2.y))
     pygame.display.update()
     
     
-def move_spe1(spe1, key):
-    if key[pygame.K_w] and spe1.y - VEL > 0:
+def move_spe1(spe1, spe2, key):
+    if key[pygame.K_w] and spe1.y - VEL > 0 and not (spe1.x + 110  > spe2.x and spe1.x < spe2.x + 110 and spe1.y < spe2.y + 110 and spe1.y + 110 > spe2.y):
             spe1.y -= VEL
-    if key[pygame.K_s] and spe1.y + VEL + spe1.height < HEIGHT:
+    if key[pygame.K_s] and spe1.y + VEL + spe1.height < HEIGHT and not (spe1.x + 110  > spe2.x and spe1.x < spe2.x + 110 and not spe1.y < spe2.y + 110 and not spe1.y + 110 > spe2.y):
             spe1.y += VEL
     if key[pygame.K_a] and spe1.x - VEL > 0:
             spe1.x -= VEL
     if key[pygame.K_d] and spe1.x + VEL + spe1.width < WIDTH:
         spe1.x += VEL
         
-def move_spe2(spe2, key):
+def move_spe2(spe1, spe2, key):
     if key[pygame.K_UP] and spe2.y - VEL > 0:
             spe2.y -= VEL
     if key[pygame.K_DOWN] and spe2.y + VEL + spe2.height < HEIGHT:
@@ -61,8 +67,8 @@ def main():
         
         key = pygame.key.get_pressed()
         
-        move_spe1(spe1, key)
-        move_spe2(spe2, key)
+        move_spe1(spe1, spe2, key)
+        move_spe2(spe1, spe2, key)
         draw_screen( spe1, spe2)
     pygame.quit()
 
