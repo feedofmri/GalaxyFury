@@ -1,6 +1,7 @@
 import pygame
 import os
 pygame.font.init()
+pygame.mixer.init()
 
 #team 1
 SPACESHIP_1 = pygame.transform.scale(pygame.image.load(os.path.join("spaceship", "spaceship1.png")), (90, 91)) 
@@ -16,7 +17,7 @@ BULLET_2 = pygame.transform.scale(pygame.image.load(os.path.join("bullet2.png"))
 BG = pygame.image.load(os.path.join("bg.png"))
 
 WHITE = (255, 255, 255)
-FPS = 60
+FPS = 70
 VEL = 5
 BULL_VEL = 10
 MAX_BULLETS = 3
@@ -25,6 +26,11 @@ DEVIDER = pygame.Rect(WIDTH//2 - 3, 0, 6, HEIGHT)
 
 FONT = pygame.font.Font("MadimiOne-Regular.ttf", 30)
 WINNER_FONT = pygame.font.Font("MadimiOne-Regular.ttf", 80)
+
+SHOT_SOUND = pygame.mixer.Sound("shot.mp3")
+HIT_SOUND = pygame.mixer.Sound("hit.mp3")
+WIN_SOUND = pygame.mixer.Sound("win.wav")
+BG_SOUND = pygame.mixer.Sound("bg.mp3")
 
 SPE1_HIT = pygame.USEREVENT + 1
 SPE2_HIT = pygame.USEREVENT + 2
@@ -80,6 +86,7 @@ def handle_bullets(spe1_bullets, spe2_bullets, spe1, spe2):
         bullet.x += BULL_VEL
         if spe2.colliderect(bullet):
             pygame.event.post(pygame.event.Event(SPE2_HIT))
+            HIT_SOUND.play()
             spe1_bullets.remove(bullet)
         elif bullet.x > WIDTH:
             spe1_bullets.remove(bullet)
@@ -88,11 +95,13 @@ def handle_bullets(spe1_bullets, spe2_bullets, spe1, spe2):
         bullet.x -= BULL_VEL
         if spe1.colliderect(bullet):
             pygame.event.post(pygame.event.Event(SPE1_HIT))
+            HIT_SOUND.play()
             spe2_bullets.remove(bullet)
         elif bullet.x < 0:
             spe2_bullets.remove(bullet)
         
 def draw_winner(text):
+    WIN_SOUND.play()
     draw_text = WINNER_FONT.render(text, 1, WHITE)
     SCREEN.blit(draw_text, (WIDTH/2 - draw_text.get_width() /
                          2, HEIGHT/2 - draw_text.get_height()/2))
@@ -122,26 +131,28 @@ def main():
                 pygame.quit()
         
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LSHIFT and len(spe1_bullets) < MAX_BULLETS:
+                if event.key == pygame.K_r and len(spe1_bullets) < MAX_BULLETS:
                     bullet = pygame.Rect(spe1.x + spe1.width, spe1.y + spe1.height//2 - 2, 10, 5)
                     spe1_bullets.append(bullet)
+                    SHOT_SOUND.play()
                 
                 
                 if event.key == pygame.K_RSHIFT and len(spe2_bullets) < MAX_BULLETS:
                     bullet = pygame.Rect(spe2.x, spe2.y + spe2.height//2 - 2, 10, 5)
                     spe2_bullets.append(bullet)
+                    SHOT_SOUND.play()
             
             if event.type == SPE1_HIT:
                 spe1_life -= 1
                 
             if event.type == SPE2_HIT:
                 spe2_life -= 1
-        
+            
         winner_text = ""          
-        if spe1_life < 0:
+        if spe1_life <= 0:
             winner_text = "Player 2 wins"
 
-        if spe2_life < 0:
+        if spe2_life <= 0:
             winner_text = "Player 1 wins"
             
         if winner_text != "":
