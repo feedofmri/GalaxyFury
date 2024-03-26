@@ -1,5 +1,5 @@
 # GalaxyFury
-
+![Game Screenshot](galaxyfury.webp)
 ## Overview
 Galaxy Fury is an exhilarating 2-player space battle game developed using Pygame. Take command of powerful spaceships and engage in intense combat, where every shot counts and victory is the ultimate goal.
 
